@@ -1,0 +1,353 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font:
+    13px/1.5 system-ui,
+    sans-serif;
+  color: #e8e8ec;
+  background: #1f1f24;
+  user-select: none;
+  overflow: hidden;
+}
+
+label {
+  display: block;
+  font-size: 11px;
+  color: #9a9aa5;
+}
+
+input {
+  width: 100%;
+  margin-top: 4px;
+  padding: 7px 9px;
+  border: 1px solid #3a3a44;
+  border-radius: 5px;
+  background: #15151a;
+  color: inherit;
+  font: inherit;
+  user-select: text;
+}
+
+input:focus {
+  outline: none;
+  border-color: #6c7bff;
+}
+
+button {
+  cursor: pointer;
+  padding: 6px 14px;
+  border: 1px solid #3a3a44;
+  border-radius: 5px;
+  background: #2a2a32;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #34343e;
+}
+
+button.primary {
+  background: #4a5ae8;
+  border-color: #4a5ae8;
+}
+
+button.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #9a9aa5;
+  font-size: 11px;
+}
+
+.panel {
+  cursor: move;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 7px 8px;
+  border: 1px solid #32323c;
+  border-radius: 5px;
+  background: #22222a;
+}
+
+/* 단축키 줄: 이름과 입력칸을 한 줄에 놓아 높이를 절반으로 줄인다. */
+.settings label {
+  display: grid;
+  grid-template-columns: 1fr 116px;
+  align-items: center;
+  gap: 6px;
+}
+
+.settings input {
+  margin-top: 0;
+  padding: 4px 7px;
+}
+
+.sizes {
+  display: flex;
+  gap: 5px;
+}
+
+.sizes button {
+  flex: 1;
+  padding: 5px 0;
+  font-size: 11px;
+}
+
+.sub {
+  font-size: 11px;
+  color: #9a9aa5;
+}
+
+.hint {
+  font-size: 10px;
+  color: #70707c;
+}
+
+.error {
+  color: #ff8a8a;
+  font-size: 11px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.peek {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.view {
+  flex: 1;
+  border: 0;
+  background: #000;
+}
+
+.bar {
+  position: relative;
+  /* 손잡이 띠(3)보다 위. 하단바 버튼이 가려지면 안 된다. */
+  z-index: 4;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  background: #17171c;
+}
+
+.bar button {
+  font-size: 11px;
+  padding: 4px 10px;
+}
+
+.bar .opacity {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  font-size: 11px;
+  color: #8a8a95;
+}
+
+.bar .opacity input {
+  width: 72px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  accent-color: #6c7bff;
+}
+
+.peek .overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  left: 8px;
+  z-index: 2;
+  box-shadow: 0 8px 24px #000a;
+}
+
+/* 손잡이 띠(3)·오버레이(2)보다 위. 잠금·최소화·종료는 어떤 층에 가려도 안 된다. */
+.lock,
+.corner {
+  position: absolute;
+  top: 5px;
+  z-index: 2147483647;
+}
+
+.lock {
+  left: 5px;
+  padding: 1px 5px;
+  border: 0;
+  border-radius: 4px;
+  background: #000a;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.lock:hover {
+  background: #000d;
+}
+
+.corner {
+  right: 5px;
+  display: flex;
+  gap: 4px;
+}
+
+/* opacity: 0은 마우스 이벤트를 그대로 받으므로, 안 보이는 상태에서도 커서가 오면 드러난다. */
+.corner button {
+  padding: 1px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: #000a;
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0;
+  transition:
+    opacity 0.12s,
+    transform 0.12s;
+}
+
+.corner:hover button {
+  opacity: 1;
+}
+
+.corner button:hover {
+  transform: scale(1.18);
+}
+
+.corner .x:hover {
+  background: #c0392bdd;
+}
+
+/* 영상만 보기 전용. webview 위에 깔아 아무 데나 잡고 끌 수 있게 하는 투명한 층.
+   하단바(34px)는 비워 두어 버튼과 슬라이더를 가리지 않는다. */
+.drag {
+  cursor: move;
+  position: absolute;
+  inset: 0 0 34px;
+  z-index: 1;
+}
+
+/* 페이지 보기에서 창을 옮길 띠. 바깥 6px쯤은 OS 리사이즈 판정이 먼저 가져가므로
+   그보다 얇으면 잡히지 않는다. 아래쪽은 하단바가 그 역할을 한다.
+   위·왼쪽 30px은 페이지 위에 투명하게 얹고, 오른쪽 20px은 스크롤바를 막지 않도록
+   페이지를 밀어낸 어두운 프레임으로 둔다. */
+.peek.framed {
+  padding-right: 20px;
+  background: #17171c;
+}
+.grab {
+  position: absolute;
+  z-index: 3;
+  cursor: move;
+}
+
+.grab.top {
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 30px;
+}
+
+.grab.left {
+  top: 0;
+  bottom: 34px;
+  left: 0;
+  width: 30px;
+}
+
+.grab.right {
+  top: 0;
+  bottom: 34px;
+  right: 0;
+  width: 20px;
+}
+
+.help {
+  position: relative;
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background: #3a3a46;
+  color: #c8c8d2;
+  font-size: 9px;
+  line-height: 13px;
+  text-align: center;
+  cursor: help;
+}
+
+.help:hover {
+  background: #4a5ae8;
+  color: #fff;
+}
+
+/* 네이티브 title 툴팁은 흰 배경에 1초쯤 지연이 있다. CSS로 바로 뜨는 어두운 툴팁을 쓴다. */
+.help:hover::after {
+  content: attr(data-help);
+  position: absolute;
+  top: 19px;
+  left: -2px;
+  z-index: 9;
+  width: 232px;
+  padding: 6px 8px;
+  border: 1px solid #43434f;
+  border-radius: 5px;
+  background: #2d2d38;
+  box-shadow: 0 6px 16px #000a;
+  color: #dcdce6;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: left;
+  white-space: normal;
+}
+
+.now {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 8px;
+  border: 1px solid #3a3a44;
+  border-radius: 5px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.now.primary {
+  border-color: #4a5ae8;
+  background: #4a5ae8;
+}
+
+/* 하단바가 좁아지면 라벨을 접고 아이콘만 남긴다. */
+.bar .label {
+  margin-left: 4px;
+}
+
+@media (max-width: 560px) {
+  .bar .label {
+    display: none;
+  }
+
+  .bar .opacity input {
+    width: 56px;
+  }
+}
