@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.sneakpeek.app
 productName: sneak-peek
 directories:
   buildResources: build
@@ -13,6 +13,12 @@ asarUnpack:
   - resources/**
 win:
   executableName: sneak-peek
+  # portable: 설치 없이 exe 하나만 주면 되는 형태. nsis: 설치 프로그램.
+  target:
+    - portable
+    - nsis
+portable:
+  artifactName: ${name}-${version}-portable.${ext}
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
